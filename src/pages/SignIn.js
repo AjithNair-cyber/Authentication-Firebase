@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,18 +11,16 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { green } from '@mui/material/colors'
+import GoogleIcon from '@mui/icons-material/Google';
+import { useAuth } from '../contexts/AuthContext';
+import { useHistory } from 'react-router-dom'
 
 function Copyright(props) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
+            <Link color="inherit" href="https://github.com/AjithNair-cyber">
+                GitHub Profile
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -30,24 +28,10 @@ function Copyright(props) {
     );
 }
 
-const theme = createTheme({
-    palette: {
-        primary: {
-            light: '#757ce8',
-            main: '#3f50b5',
-            dark: '#002884',
-            contrastText: '#fff',
-        },
-        secondary: {
-            light: '#ff7961',
-            main: '#f44336',
-            dark: '#ba000d',
-            contrastText: '#000',
-        },
-    },
-});
-
 export default function SignIn() {
+    const { logInWithEmail, signInWithGoogle } = useAuth();
+    const history = useHistory();
+    const [error, setError] = React.useState("");
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -56,42 +40,58 @@ export default function SignIn() {
             email: data.get('email'),
             password: data.get('password'),
         });
+        logInWithEmail(data.get('email'), data.get('password'))
     };
+    const handleGoogleSignup = async () => {
+        try {
+            await signInWithGoogle()
+            history.push("/")
+        } catch (err) {
+            setError(err)
+        }
+    }
 
     const [open, setOpen] = React.useState(false);
 
-    const handleOpen = () => {
-        setOpen(true);
-    };
+    const googleStyle = {
+        background: 'linear-gradient(-120deg, #4285F4, #34A853, #FBBC05, #EA4335)',
+        color: 'white'
+    }
 
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
+    // const handleOpen = () => {
+    //     setOpen(true);
+    // };
 
-        setOpen(false);
-    };
+    // const handleClose = (event, reason) => {
+    //     if (reason === 'clickaway') {
+    //         return;
+    //     }
 
-    const action = (
-        <React.Fragment>
-            <Button color="secondary" size="small" onClick={handleClose}>
-                UNDO
-            </Button>
-            <IconButton
-                size="small"
-                aria-label="close"
-                color="inherit"
-                onClick={handleClose}
-            >
-                <CloseIcon fontSize="small" />
-            </IconButton>
-        </React.Fragment>
-    );
+    //     setOpen(false);
+    // };
+
+    // const action = (
+    //     <React.Fragment>
+    //         <Button color="secondary" size="small" onClick={handleClose}>
+    //             UNDO
+    //         </Button>
+    //         <IconButton
+    //             size="small"
+    //             aria-label="close"
+    //             color="inherit"
+    //             onClick={handleClose}
+    //         >
+    //             <CloseIcon fontSize="small" />
+    //         </IconButton>
+    //     </React.Fragment>
+    // );
 
 
     return (
-        <ThemeProvider theme={theme}>
+        <div>
+
             <Container component="main" maxWidth="xs" >
+
                 <CssBaseline />
                 <Box
                     sx={{
@@ -139,24 +139,34 @@ export default function SignIn() {
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                            onClick={handleOpen}
+                        // onClick={handleOpen}
                         >
                             Sign In
                         </Button>
 
-                        <Grid item xs>
+                        <Grid item xs align="center">
                             <Link href="#" variant="body2">
                                 Forgot password?
                             </Link>
                         </Grid>
                         <Grid item sx={{
                             paddingTop: 2
-                        }}>
-                            <Link href="#" variant="elevation1" style={{color:"#00adb5"}}>
+                        }} align="center">
+                            <Link href="/signup" variant="elevation1" style={{ color: "#00adb5" }}>
                                 {"Don't have an account?   Sign Up"}
                             </Link>
                         </Grid>
-                        <div>
+                        <Button
+                            fullWidth
+                            style={googleStyle}
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                            onClick={handleGoogleSignup}
+                            startIcon={<GoogleIcon />}
+                        >
+                            Continue with Google
+                        </Button>
+                        {/* <Grid>
                             <Button onClick={handleOpen}>Open simple snackbar</Button>
                             <Snackbar
                                 open={open}
@@ -165,11 +175,21 @@ export default function SignIn() {
                                 message="Note archived"
                                 action={action}
                             />
-                        </div>
+                        </Grid>
+                        <Button
+                            variant="contained"
+                            component="label"
+                        >
+                            Upload File
+                            <input
+                                type="file"
+                                hidden
+                            />
+                        </Button> */}
                     </Box>
                 </Box>
                 <Copyright sx={{ mt: 8, mb: 4 }} />
             </Container>
-        </ThemeProvider>
+        </div>
     );
 }
