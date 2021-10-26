@@ -32,20 +32,21 @@ export default function SignIn() {
     const { logInWithEmail, signInWithGoogle } = useAuth();
     const history = useHistory();
     const [error, setError] = React.useState("");
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        // eslint-disable-next-line no-console
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-        logInWithEmail(data.get('email'), data.get('password'))
+
+        try {
+            logInWithEmail(data.get('email'), data.get('password'))
+            history.push("/usercustomization")
+        } catch (err) {
+            setError(err)
+        }
     };
     const handleGoogleSignup = async () => {
         try {
             await signInWithGoogle()
-            history.push("/")
+            history.push("/usercustomization")
         } catch (err) {
             setError(err)
         }
@@ -89,9 +90,7 @@ export default function SignIn() {
 
     return (
         <div>
-
             <Container component="main" maxWidth="xs" >
-
                 <CssBaseline />
                 <Box
                     sx={{

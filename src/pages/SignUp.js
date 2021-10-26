@@ -29,14 +29,14 @@ function Copyright(props) {
 
 export default function SignUp() {
   const [error, setError] = React.useState("")
-  const { signInWithGoogle, signInWithEmail , currentUser} = useAuth();
+  const { signInWithGoogle, signInWithEmail, currentUser } = useAuth();
   console.log(currentUser)
   const history = useHistory();
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    if (data.get('email') === "" || data.get('password') === "" || data.get('confirm_password') === "" ||data.get('name') === "") {
+    if (data.get('email') === "" || data.get('password') === "" || data.get('confirm_password') === "" || data.get('name') === "") {
       setError("Enter all fields")
       return console.log(error)
     }
@@ -54,7 +54,7 @@ export default function SignUp() {
     try {
       const value = await signInWithEmail(data.get('email'), data.get('password'))
       console.log(value)
-      history.push("/")
+      history.push("/usercustomization")
     } catch (err) {
       setError(err)
     }
@@ -63,7 +63,7 @@ export default function SignUp() {
   const handleGoogleSignup = async () => {
     try {
       await signInWithGoogle()
-      history.push("/")
+      history.push("/usercustomization")
     } catch (err) {
       setError(err)
     }
@@ -97,7 +97,7 @@ export default function SignUp() {
           {error && <Alert severity="error">{error}</Alert>}
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-            <Grid item xs={12}>
+              <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth

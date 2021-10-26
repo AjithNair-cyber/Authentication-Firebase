@@ -41,7 +41,7 @@ export function AuthProvider({ children }) {
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
-                console.log(user)
+                setCurrentUser(user)
                 // ...
             })
             .catch((error) => {
@@ -57,7 +57,7 @@ export function AuthProvider({ children }) {
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
-                console.log(user)
+                setCurrentUser(user)
                 // ...
             })
             .catch((error) => {
