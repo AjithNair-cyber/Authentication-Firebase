@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import Alert from '@mui/material/Alert';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -29,24 +30,28 @@ function Copyright(props) {
 }
 
 export default function SignIn() {
-    const { logInWithEmail, signInWithGoogle } = useAuth();
+    const { logInWithEmail, signInWithGoogle, authError } = useAuth();
     const history = useHistory();
     const [error, setError] = React.useState("");
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-
+        if (data.get('email') === "" || data.get('password') === "") {
+            return setError("Please fill all fields");
+        }
         try {
             logInWithEmail(data.get('email'), data.get('password'))
-            history.push("/usercustomization")
+            if (authError === "") { history.push("/") }
+            history.push("/signin")
         } catch (err) {
             setError(err)
         }
     };
     const handleGoogleSignup = async () => {
         try {
-            await signInWithGoogle()
-            history.push("/usercustomization")
+            signInWithGoogle()
+            if (authError === "") { history.push("/") }
+            history.push("/signin")
         } catch (err) {
             setError(err)
         }
@@ -108,6 +113,8 @@ export default function SignIn() {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
+                    {error && <Alert severity="error">{error}</Alert>}
+                    {authError && <Alert severity="error">{authError}</Alert>}
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"

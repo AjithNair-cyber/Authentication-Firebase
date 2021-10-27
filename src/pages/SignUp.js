@@ -13,6 +13,7 @@ import Container from '@mui/material/Container';
 import GoogleIcon from '@mui/icons-material/Google';
 import { useAuth } from '../contexts/AuthContext'
 import { useHistory } from 'react-router-dom'
+import { auth } from '../firebase';
 
 function Copyright(props) {
   return (
@@ -29,8 +30,7 @@ function Copyright(props) {
 
 export default function SignUp() {
   const [error, setError] = React.useState("")
-  const { signInWithGoogle, signInWithEmail, currentUser } = useAuth();
-  console.log(currentUser)
+  const { signInWithGoogle, signInWithEmail, currentUser, authError } = useAuth();
   const history = useHistory();
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -52,9 +52,9 @@ export default function SignUp() {
     setError("")
 
     try {
-      const value = await signInWithEmail(data.get('email'), data.get('password'))
-      console.log(value)
-      history.push("/usercustomization")
+      signInWithEmail(data.get('email'), data.get('password'), data.get('name'))
+      if (authError === "") { history.push("/") }
+      history.push("/signup")
     } catch (err) {
       setError(err)
     }
@@ -62,8 +62,8 @@ export default function SignUp() {
 
   const handleGoogleSignup = async () => {
     try {
-      await signInWithGoogle()
-      history.push("/usercustomization")
+      signInWithGoogle()
+      history.push("/")
     } catch (err) {
       setError(err)
     }
@@ -94,6 +94,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+          {authError && <Alert severity="error">{authError}</Alert>}
           {error && <Alert severity="error">{error}</Alert>}
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
