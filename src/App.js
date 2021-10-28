@@ -7,6 +7,9 @@ import MyAppBar from "./components/myAppBar";
 import { AuthProvider } from "./contexts/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import UserCustomization from "./pages/UserCustomization";
+import ReRoute from "./components/ReRoute";
+import NotFound from "./pages/NotFound";
+import DashBoard from "./pages/DashBoard";
 
 function App() {
   const theme = createTheme({
@@ -33,9 +36,11 @@ function App() {
           <MyAppBar />
           <div className="App">
             <Switch>
-              <PrivateRoute path="/" exact component={UserCustomization} />
-              <Route path="/signup" component={SignUp} />
-              <Route path="/signin" component={SignIn} />
+              <PrivateRoute path="/usercustomization" exact component={UserCustomization} />
+              <PrivateRoute path="/" exact component={DashBoard} />
+              <ReRoute path="/signup" component={SignUp} />
+              <ReRoute path="/signin" component={SignIn} />
+              <Route component={NotFound} />
             </Switch>
           </div>
         </AuthProvider>

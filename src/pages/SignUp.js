@@ -29,14 +29,13 @@ function Copyright(props) {
 
 export default function SignUp() {
   const [error, setError] = React.useState("")
-  const { signInWithGoogle, signInWithEmail , currentUser} = useAuth();
-  console.log(currentUser)
+  const { signInWithGoogle, signInWithEmail, authError } = useAuth();
   const history = useHistory();
-  const handleSubmit = async (event) => {
+  const handleSubmit =(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    if (data.get('email') === "" || data.get('password') === "" || data.get('confirm_password') === "" ||data.get('name') === "") {
+    if (data.get('email') === "" || data.get('password') === "" || data.get('confirm_password') === "" || data.get('name') === "") {
       setError("Enter all fields")
       return console.log(error)
     }
@@ -52,17 +51,17 @@ export default function SignUp() {
     setError("")
 
     try {
-      const value = await signInWithEmail(data.get('email'), data.get('password'))
-      console.log(value)
-      history.push("/")
+      signInWithEmail(data.get('email'), data.get('password'), data.get('name'))
+      if (authError === "") { history.push("/") }
+      history.push("/signup")
     } catch (err) {
       setError(err)
     }
   };
 
-  const handleGoogleSignup = async () => {
+  const handleGoogleSignup = () => {
     try {
-      await signInWithGoogle()
+      signInWithGoogle()
       history.push("/")
     } catch (err) {
       setError(err)
@@ -94,10 +93,11 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+          {authError && <Alert severity="error">{authError}</Alert>}
           {error && <Alert severity="error">{error}</Alert>}
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-            <Grid item xs={12}>
+              <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth

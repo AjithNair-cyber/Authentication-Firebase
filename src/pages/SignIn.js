@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import Alert from '@mui/material/Alert';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -29,69 +30,41 @@ function Copyright(props) {
 }
 
 export default function SignIn() {
-    const { logInWithEmail, signInWithGoogle } = useAuth();
+    const { logInWithEmail, signInWithGoogle, authError } = useAuth();
     const history = useHistory();
     const [error, setError] = React.useState("");
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        // eslint-disable-next-line no-console
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-        logInWithEmail(data.get('email'), data.get('password'))
-    };
-    const handleGoogleSignup = async () => {
+        if (data.get('email') === "" || data.get('password') === "") {
+            return setError("Please fill all fields");
+        }
         try {
-            await signInWithGoogle()
-            history.push("/")
+            logInWithEmail(data.get('email'), data.get('password'))
+            if (authError === "") { history.push("/") }
+            history.push("/signin")
+        } catch (err) {
+            setError(err)
+        }
+    };
+    const handleGoogleSignup = () => {
+        try {
+            signInWithGoogle()
+            if (authError === "") { history.push("/") }
+            history.push("/signin")
         } catch (err) {
             setError(err)
         }
     }
-
-    const [open, setOpen] = React.useState(false);
 
     const googleStyle = {
         background: 'linear-gradient(-120deg, #4285F4, #34A853, #FBBC05, #EA4335)',
         color: 'white'
     }
 
-    // const handleOpen = () => {
-    //     setOpen(true);
-    // };
-
-    // const handleClose = (event, reason) => {
-    //     if (reason === 'clickaway') {
-    //         return;
-    //     }
-
-    //     setOpen(false);
-    // };
-
-    // const action = (
-    //     <React.Fragment>
-    //         <Button color="secondary" size="small" onClick={handleClose}>
-    //             UNDO
-    //         </Button>
-    //         <IconButton
-    //             size="small"
-    //             aria-label="close"
-    //             color="inherit"
-    //             onClick={handleClose}
-    //         >
-    //             <CloseIcon fontSize="small" />
-    //         </IconButton>
-    //     </React.Fragment>
-    // );
-
-
     return (
         <div>
-
             <Container component="main" maxWidth="xs" >
-
                 <CssBaseline />
                 <Box
                     sx={{
@@ -109,6 +82,8 @@ export default function SignIn() {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
+                    {error && <Alert severity="error">{error}</Alert>}
+                    {authError && <Alert severity="error">{authError}</Alert>}
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"
