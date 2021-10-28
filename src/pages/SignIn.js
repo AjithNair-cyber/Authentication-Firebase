@@ -33,7 +33,7 @@ export default function SignIn() {
     const { logInWithEmail, signInWithGoogle, authError } = useAuth();
     const history = useHistory();
     const [error, setError] = React.useState("");
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         if (data.get('email') === "" || data.get('password') === "") {
@@ -47,7 +47,7 @@ export default function SignIn() {
             setError(err)
         }
     };
-    const handleGoogleSignup = async () => {
+    const handleGoogleSignup = () => {
         try {
             signInWithGoogle()
             if (authError === "") { history.push("/") }
@@ -57,41 +57,10 @@ export default function SignIn() {
         }
     }
 
-    const [open, setOpen] = React.useState(false);
-
     const googleStyle = {
         background: 'linear-gradient(-120deg, #4285F4, #34A853, #FBBC05, #EA4335)',
         color: 'white'
     }
-
-    // const handleOpen = () => {
-    //     setOpen(true);
-    // };
-
-    // const handleClose = (event, reason) => {
-    //     if (reason === 'clickaway') {
-    //         return;
-    //     }
-
-    //     setOpen(false);
-    // };
-
-    // const action = (
-    //     <React.Fragment>
-    //         <Button color="secondary" size="small" onClick={handleClose}>
-    //             UNDO
-    //         </Button>
-    //         <IconButton
-    //             size="small"
-    //             aria-label="close"
-    //             color="inherit"
-    //             onClick={handleClose}
-    //         >
-    //             <CloseIcon fontSize="small" />
-    //         </IconButton>
-    //     </React.Fragment>
-    // );
-
 
     return (
         <div>

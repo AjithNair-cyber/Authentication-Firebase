@@ -9,7 +9,6 @@ import { useHistory } from 'react-router-dom'
 const UserCustomization = () => {
     const { logOut, currentUser, updateUserInfo } = useAuth();
     const [error, setError] = React.useState("");
-    const [success, setSuccess] = React.useState(false);
     const history = useHistory()
     const handleLogout = async () => {
         await logOut();
@@ -21,10 +20,13 @@ const UserCustomization = () => {
             setError("Enter all fields")
             return console.log(error)
         }
+        if (data.get('age')<=0) {
+            setError("Enter proper age")
+            return console.log(error)
+        }
         setError("")
         try {
             updateUserInfo(data.get('name'), data.get('address'), data.get('age').toString())
-            setSuccess(true)
             history.push("/")
         } catch (err) {
             setError(err)
@@ -50,7 +52,6 @@ const UserCustomization = () => {
                         User Customization
                     </Typography>
                     {error && <Alert severity="error">{error}</Alert>}
-                    {success ? <Alert severity="success">Changed Successfully</Alert> : <Alert></Alert> }
                     <Box borderRadius="50%"><img src={currentUser.photoURL} alt="profile pic" /></Box>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }} >
                         <Grid container spacing={2}>

@@ -13,7 +13,6 @@ import Container from '@mui/material/Container';
 import GoogleIcon from '@mui/icons-material/Google';
 import { useAuth } from '../contexts/AuthContext'
 import { useHistory } from 'react-router-dom'
-import { auth } from '../firebase';
 
 function Copyright(props) {
   return (
@@ -30,9 +29,9 @@ function Copyright(props) {
 
 export default function SignUp() {
   const [error, setError] = React.useState("")
-  const { signInWithGoogle, signInWithEmail, currentUser, authError } = useAuth();
+  const { signInWithGoogle, signInWithEmail, authError } = useAuth();
   const history = useHistory();
-  const handleSubmit = async (event) => {
+  const handleSubmit =(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
@@ -60,7 +59,7 @@ export default function SignUp() {
     }
   };
 
-  const handleGoogleSignup = async () => {
+  const handleGoogleSignup = () => {
     try {
       signInWithGoogle()
       history.push("/")
