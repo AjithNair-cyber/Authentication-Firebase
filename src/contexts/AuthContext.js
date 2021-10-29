@@ -62,6 +62,7 @@ export function AuthProvider({ children }) {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password, username)
             const user = userCredential.user
+            console.log(username)
 
             //Realtime Database functions
             // const dbRef = ref(db)
@@ -81,7 +82,7 @@ export function AuthProvider({ children }) {
             // }
             try {
                 await setDoc(doc(firestore, "users", user.uid), {
-                    username: user.displayName,
+                    full_name: username,
                     email: user.email,
                     profile_picture: user.photoURL,
                     provider: "email"
