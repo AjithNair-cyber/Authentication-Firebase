@@ -45,7 +45,7 @@ export function AuthProvider({ children }) {
                     username: user.displayName,
                     email: user.email,
                     profile_picture: user.photoURL,
-                    provider: "email"
+                    provider: "google"
                 });
                 console.log(user.uid);
             } catch (e) {
@@ -84,7 +84,7 @@ export function AuthProvider({ children }) {
                     username: user.displayName,
                     email: user.email,
                     profile_picture: user.photoURL,
-                    provider: "google"
+                    provider: "email"
                 });
                 console.log(user.uid);
             } catch (e) {
@@ -100,7 +100,7 @@ export function AuthProvider({ children }) {
 
     const logInWithEmail = async (email, password) => {
         try {
-            const userCredential = signInWithEmailAndPassword(auth, email, password)
+            const userCredential = await signInWithEmailAndPassword(auth, email, password)
             const user = userCredential.user;
         }
         catch (error) {

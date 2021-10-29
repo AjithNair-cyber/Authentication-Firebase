@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import { useAuth } from "../contexts/AuthContext";
 
 const MyAppBar = () => {
-    const { logOut } = useAuth();
+    const { logOut, currentUser } = useAuth();
     const handleLogout = async () => {
         await logOut();
     }
@@ -18,9 +18,9 @@ const MyAppBar = () => {
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         Internship Assignment
                     </Typography>
-                    <Button color="inherit" href="/signup">SignUp</Button>
-                    <Button color="inherit" href="/signin">SignIn</Button>
-                    <Button color="inherit" href="/signup" onClick={handleLogout}>Logout</Button>
+                    {!currentUser ? <Button color="inherit" href="/signup">SignUp</Button> : <> </>}
+                    {!currentUser ? <Button color="inherit" href="/signin">SignIn</Button> : <> </>}
+                    {currentUser ? <Button color="inherit" href="/signup" onClick={handleLogout}>Logout</Button> : <> </>}
                 </Toolbar>
             </AppBar>
         </div>
