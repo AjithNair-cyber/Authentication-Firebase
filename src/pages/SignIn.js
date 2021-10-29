@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import GoogleIcon from '@mui/icons-material/Google';
+import FacebookIcon from '@mui/icons-material/Facebook';
 import { useAuth } from '../contexts/AuthContext';
 import { useHistory } from 'react-router-dom'
 
@@ -30,7 +31,7 @@ function Copyright(props) {
 }
 
 export default function SignIn() {
-    const { logInWithEmail, signInWithGoogle, authError } = useAuth();
+    const { logInWithEmail, signInWithGoogle, authError, signInWithFacebook } = useAuth();
     const history = useHistory();
     const [error, setError] = React.useState("");
     const handleSubmit = (event) => {
@@ -50,6 +51,15 @@ export default function SignIn() {
     const handleGoogleSignup = () => {
         try {
             signInWithGoogle()
+            if (authError === "") { history.push("/") }
+            history.push("/signin")
+        } catch (err) {
+            setError(err)
+        }
+    }
+    const handleFaceBookSignup = () => {
+        try {
+            signInWithFacebook()
             if (authError === "") { history.push("/") }
             history.push("/signin")
         } catch (err) {
@@ -140,6 +150,15 @@ export default function SignIn() {
                             startIcon={<GoogleIcon />}
                         >
                             Continue with Google
+                        </Button>
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                            onClick={handleFaceBookSignup}
+                            startIcon={<FacebookIcon />}
+                        >
+                            Continue with FaceBook
                         </Button>
                         {/* <Grid>
                             <Button onClick={handleOpen}>Open simple snackbar</Button>

@@ -8,6 +8,7 @@ import Alert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import FacebookIcon from '@mui/icons-material/Facebook';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import GoogleIcon from '@mui/icons-material/Google';
@@ -29,9 +30,9 @@ function Copyright(props) {
 
 export default function SignUp() {
   const [error, setError] = React.useState("")
-  const { signInWithGoogle, signInWithEmail, authError } = useAuth();
+  const { signInWithGoogle, signInWithEmail, authError, signInWithFacebook } = useAuth();
   const history = useHistory();
-  const handleSubmit =(event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
@@ -62,6 +63,15 @@ export default function SignUp() {
   const handleGoogleSignup = () => {
     try {
       signInWithGoogle()
+      history.push("/")
+    } catch (err) {
+      setError(err)
+    }
+  }
+  const handleFaceBookSignup = () => {
+    try {
+      signInWithFacebook()
+      if (authError === "") { history.push("/") }
       history.push("/")
     } catch (err) {
       setError(err)
@@ -163,6 +173,15 @@ export default function SignUp() {
               startIcon={<GoogleIcon />}
             >
               Continue With Google
+            </Button>
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              onClick={handleFaceBookSignup}
+              startIcon={<FacebookIcon />}
+            >
+              Continue with FaceBook
             </Button>
           </Box>
         </Box>

@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect } from "react"
-import { auth, db, firestore } from "../firebase"
+import { auth, firestore } from "../firebase"
 import { updateDoc, setDoc, doc, getDoc } from "firebase/firestore";
-import { ref, set, update, get, child } from "firebase/database";
-import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword } from "firebase/auth";
+// import { ref, set, update, get, child } from "firebase/database";
+import { GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword } from "firebase/auth";
 
 const AuthContext = React.createContext()
 
@@ -47,7 +47,46 @@ export function AuthProvider({ children }) {
                     profile_picture: user.photoURL,
                     provider: "google"
                 });
-                console.log(user.uid);
+            } catch (e) {
+                console.error("Error adding document: ", e);
+            }
+            setCurrentUser(user)
+        } catch (err) {
+            setAuthError(err.message)
+        }
+
+    }
+
+    const signInWithFacebook = async () => {
+        const provider = new FacebookAuthProvider();
+        try {
+            const result = await signInWithPopup(auth, provider)
+            const user = result.user
+
+            //Realtime Database functions
+            // const dbRef = ref(db)
+            // const snapshot = await get(child(dbRef, `users/${user.uid}`))
+            // if (!snapshot.exists()) {
+            //     try {
+            //         await set(ref(db, 'users/' + user.uid), {
+            //             username: user.displayName,
+            //             email: user.email,
+            //             profile_picture: user.photoURL,
+            //             provider: "google"
+            //         });
+
+            //     } catch (err) {
+            //         console.log(err)
+            //     }
+            // }
+
+            try {
+                await setDoc(doc(firestore, "users", user.uid), {
+                    username: user.displayName,
+                    email: user.email,
+                    profile_picture: user.photoURL,
+                    provider: "facebook"
+                });
             } catch (e) {
                 console.error("Error adding document: ", e);
             }
@@ -87,7 +126,7 @@ export function AuthProvider({ children }) {
                     profile_picture: user.photoURL,
                     provider: "email"
                 });
-                console.log(user.uid);
+
             } catch (e) {
                 console.error("Error adding document: ", e);
             }
@@ -103,6 +142,7 @@ export function AuthProvider({ children }) {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password)
             const user = userCredential.user;
+            console.log(user)
         }
         catch (error) {
             const errorMessage = error.message;
@@ -134,7 +174,6 @@ export function AuthProvider({ children }) {
                 address: address,
                 age: age
             });
-            console.log(currentUser.uid);
         } catch (err) {
             setAuthError(err)
         }
@@ -176,6 +215,7 @@ export function AuthProvider({ children }) {
     const value = {
         signInWithGoogle,
         signInWithEmail,
+        signInWithFacebook,
         logOut,
         logInWithEmail,
         updateUserInfo,
